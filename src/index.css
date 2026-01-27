@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #000000;
+    --accent: #f59e0b;
+    /* Amber 500 */
+    --success: #10b981;
+    /* Emerald 500 */
+    --background: #ffffff;
+    --surface: #f8f9fa;
+    --text-main: #111827;
+    --text-muted: #6b7280;
+    --radius-premium: 2rem;
+    --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+  }
+
+  body {
+    @apply antialiased text-gray-900 bg-white;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-md border-b border-white/20;
+  }
+
+  .premium-card {
+    @apply bg-white rounded-[2rem] border border-gray-50 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  .premium-button-black {
+    @apply bg-black text-white px-8 py-3 rounded-full font-bold transition-all duration-300 hover:bg-gray-800 hover:scale-105 active:scale-95 shadow-lg shadow-black/10;
+  }
+}
+
+a.active hr {
+  display: block;
+}
+
+@media (max-width : 639px) {
+  a.active {
+    background: black;
+    color: white;
+  }
+}
