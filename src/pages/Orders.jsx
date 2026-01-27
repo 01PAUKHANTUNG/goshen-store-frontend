@@ -151,7 +151,7 @@ const Orders = () => {
                                                         <div className={`w-2 h-2 rounded-full ${order.paymentStatus === 'paid' ? 'bg-green-500' : 'bg-orange-500'}`}></div>
                                                         <p className='text-[10px] font-black text-gray-400 uppercase tracking-widest'>Payment: {order.paymentStatus}</p>
                                                     </div>
-                                                    <button className='ml-auto text-xs font-black text-black underline uppercase tracking-widest hover:text-amber-600 transition-colors'>Need Help?</button>
+
                                                 </div>
                                             </div>
 
