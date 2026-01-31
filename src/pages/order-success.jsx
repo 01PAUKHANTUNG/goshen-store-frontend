@@ -1,14 +1,57 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useSearchParams } from 'react-router-dom';
 import { motion } from "framer-motion";
+import { ShopContext } from '../context/GoshenContext';
+import axios from 'axios';
 
 const OrderSuccess = () => {
     const navigate = useNavigate();
+    const [params] = useSearchParams();
+    const session_id = params.get("session_id");
+    const { backendUrl, token, setCartItems } = useContext(ShopContext);
+    const [isVerifying, setIsVerifying] = useState(session_id ? true : false);
 
     useEffect(() => {
-        // Clear local storage cart if any (Context usually handles this, but safety first)
-        localStorage.removeItem("cart");
-    }, []);
+        const verifyPayment = async () => {
+            if (!token || !session_id) return;
+
+            try {
+                const response = await axios.post(backendUrl + '/api/order/verifyStripe', { session_id }, { headers: { token } });
+
+                if (response.data.success) {
+                    setCartItems([]);
+                    navigate('/order-success', { replace: true });
+                    // Optional: You could show a specialized success message or toast here
+                    console.log("Payment Verified");
+                } else {
+                    console.warn("Payment Verification Failed:", response.data.message);
+                    // navigate('/cart'); // Optionally redirect back if failed, but for now we'll just show the page or let them stay
+                }
+            } catch (error) {
+                console.error("Verification Error:", error);
+            } finally {
+                setIsVerifying(false);
+            }
+        };
+
+        verifyPayment();
+    }, [token, session_id]);
+
+    useEffect(() => {
+        if (!session_id) {
+            // Fallback for COD or direct access (clearing cart locally just in case)
+            localStorage.removeItem("cart");
+        }
+    }, [session_id]);
+
+    if (isVerifying) {
+        return (
+            <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-gray-200 border-t-amber-500 rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center p-6 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed">

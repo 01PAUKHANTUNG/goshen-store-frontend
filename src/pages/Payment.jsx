@@ -16,6 +16,7 @@ const Payment = () => {
   const [method, setMethod] = useState('cod');
   const [clientSecret, setClientSecret] = useState('');
   const [orderId, setOrderId] = useState('');
+  const [sessionUrl, setSessionUrl] = useState('');
 
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', email: '', street: '', city: '', state: '', zipcode: '', country: '', phone: ''
@@ -25,6 +26,7 @@ const Payment = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
+    console.log("method:", method)
     const loadToast = toast.loading("Finalizing your order...")
     try {
       let orderItems = []
@@ -47,6 +49,7 @@ const Payment = () => {
       switch (method) {
         case 'cod':
           const response = await axios.post(backendUrl + '/api/order/place', orderData, { headers: { token } })
+          console.log("response:", response)
           if (response.data.success) {
             setCartItems([])
             toast.update(loadToast, { render: "Order Placed! Welcome to Goshen.", type: "success", isLoading: false, autoClose: 3000 });
@@ -57,17 +60,11 @@ const Payment = () => {
           break;
 
         case 'stripe':
-          const responseStripe = await axios.post(backendUrl + '/api/order/stripe-intent', orderData, { headers: { token } })
+          const responseStripe = await axios.post(backendUrl + '/api/order/stripe', orderData, { headers: { token } })
+          console.log("responseStripe:", responseStripe);
+
           if (responseStripe.data.success) {
-            if (responseStripe.data.isSimulated) {
-              setCartItems([]);
-              toast.update(loadToast, { render: "Order Created Successfully", type: "success", isLoading: false, autoClose: 3000 });
-              navigate('/order-success');
-            } else {
-              setClientSecret(responseStripe.data.clientSecret);
-              setOrderId(responseStripe.data.orderId);
-              toast.update(loadToast, { render: "Almost there! Secure your payment.", type: "success", isLoading: false, autoClose: 2000 });
-            }
+            setSessionUrl(responseStripe.data.session_url);
           } else {
             toast.update(loadToast, { render: responseStripe.data.message, type: "error", isLoading: false, autoClose: 3000 });
           }
@@ -78,7 +75,12 @@ const Payment = () => {
     }
   }
 
-  useEffect(() => { if (!token) navigate('/cart') }, [token])
+  useEffect(() => {
+    if (!token) navigate('/cart')
+    if (sessionUrl) {
+      window.open(sessionUrl, '_blank');
+    }
+  }, [token, sessionUrl])
 
   return (
     <div className='min-h-screen bg-[#f8f9fa] py-12 md:py-20'>

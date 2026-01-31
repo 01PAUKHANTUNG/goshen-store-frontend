@@ -148,7 +148,7 @@ const Orders = () => {
 
                                                 <div className='mt-10 pt-8 border-t border-gray-50 flex flex-wrap gap-4'>
                                                     <div className='flex items-center gap-2'>
-                                                        <div className={`w-2 h-2 rounded-full ${order.paymentStatus === 'paid' ? 'bg-green-500' : 'bg-orange-500'}`}></div>
+                                                        <div className={`w-2 h-2 rounded-full ${order.paymentStatus === 'paied' ? 'bg-green-500' : 'bg-orange-500'}`}></div>
                                                         <p className='text-[10px] font-black text-gray-400 uppercase tracking-widest'>Payment: {order.paymentStatus}</p>
                                                     </div>
 

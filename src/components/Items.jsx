@@ -40,7 +40,7 @@ const Items = (props) => {
       <div className='flex flex-col flex-1 gap-2'>
         <div className='flex justify-between items-start'>
           <p className='text-xs font-black text-gray-400 uppercase tracking-widest'>{props.subCategory}</p>
-          <p className='text-2xl font-black text-gray-900 leading-none'>{currency}{props.price}</p>
+          <p className='text-2xl font-black text-gray-900 leading-none'>{currency}{Number(props.price).toFixed(2)}</p>
         </div>
 
         <h3 className='text-lg font-bold text-gray-900 leading-tight h-14 line-clamp-2'>
