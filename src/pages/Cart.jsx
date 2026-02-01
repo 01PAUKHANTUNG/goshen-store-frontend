@@ -24,15 +24,10 @@ const Cart = () => {
   };
 
   const payment = async () => {
-    if (token) {
-      if (getCartTotal() > 0) {
-        navigate('/payment')
-      } else {
-        toast.error("Your cart is empty!")
-      }
+    if (getCartTotal() > 0) {
+      navigate('/payment')
     } else {
-      toast.error("Please login to checkout")
-      navigate('/login')
+      toast.error("Your cart is empty!")
     }
   }
 

@@ -48,3 +48,29 @@ a.active hr {
     color: white;
   }
 }
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  /* Hide typical layout elements if classes match, otherwise relying on .no-print */
+  nav,
+  footer,
+  .toast-container {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  /* Ensure receipt is centered and visible */
+  .receipt-container {
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}

@@ -53,7 +53,7 @@ const Payment = () => {
           if (response.data.success) {
             setCartItems([])
             toast.update(loadToast, { render: "Order Placed! Welcome to Goshen.", type: "success", isLoading: false, autoClose: 3000 });
-            navigate('/order-success')
+            navigate('/order-success', { state: { order: response.data.order } })
           } else {
             toast.update(loadToast, { render: response.data.message, type: "error", isLoading: false, autoClose: 3000 });
           }
@@ -76,7 +76,7 @@ const Payment = () => {
   }
 
   useEffect(() => {
-    if (!token) navigate('/cart')
+    // Guest checkout allowed, so no check for token
     if (sessionUrl) {
       window.open(sessionUrl, '_blank');
     }

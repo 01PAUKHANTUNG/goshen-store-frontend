@@ -108,7 +108,7 @@ const ProductItems = () => {
               {/* Action Buttons */}
               <div className='flex flex-col sm:flex-row gap-4'>
                 <button
-                  onClick={token ? () => addToCart(productData._id, quantity, productData.price, getProductTotal()) : () => payment()}
+                  onClick={() => addToCart(productData._id, quantity, productData.price, getProductTotal())}
                   className='flex-1 py-6 bg-black text-white rounded-[2rem] font-black uppercase tracking-[0.3em] text-sm shadow-xl shadow-black/10 hover:bg-gray-800 hover:scale-[1.02] active:scale-[0.98] transition-all'
                 >
                   Add to Cart

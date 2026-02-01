@@ -19,7 +19,7 @@ const GoshenShopProvider = (props) => {
 
 
   const currency = "$"
-  const delivery = 20;
+  const delivery = 20.00;
 
   const decrease = () => {
     if (quantity > 1) {
@@ -31,7 +31,14 @@ const GoshenShopProvider = (props) => {
   }
 
 
+  // Helper to sync local cart to storage
+  const saveLocalCart = (items) => {
+    localStorage.setItem('guestCart', JSON.stringify(items));
+    setCartItems(items);
+  };
+
   const addToCart = async (id, quantity, price) => {
+    let cartData = structuredClone(cartItems);
 
     if (token) {
       try {
@@ -40,27 +47,58 @@ const GoshenShopProvider = (props) => {
           setCartItems(response.data.cartData)
           toast.success(response.data.message);
         }
-
       } catch (error) {
         console.log(error)
         toast.error(error.message)
       }
+    } else {
+      // Local Cart Logic
+      const itemIndex = cartData.findIndex(item => item.id === id);
+      if (itemIndex > -1) {
+        cartData[itemIndex].quantity += quantity;
+        cartData[itemIndex].total = cartData[itemIndex].quantity * price;
+      } else {
+        cartData.push({ id, quantity, price, total: quantity * price });
+      }
+      saveLocalCart(cartData);
+      toast.success("Added to Cart");
     }
   };
 
   const updateQuantityDeduct = async (id, quantity, price) => {
+    let cartData = structuredClone(cartItems);
 
     if (token) {
       try {
         const response = await axios.post(backendUrl + '/api/cart/deduct', { id, quantity, price }, { headers: { token } })
         if (response.data.success) {
           setCartItems(response.data.cartData)
-
         }
-
       } catch (error) {
         console.log(error)
         toast.error(error.message)
+      }
+    } else {
+      // Local Cart Logic
+      const itemIndex = cartData.findIndex(item => item.id === id);
+      if (itemIndex > -1) {
+        if (cartData[itemIndex].quantity > 1) {
+          cartData[itemIndex].quantity -= 1;
+          cartData[itemIndex].total = cartData[itemIndex].quantity * price;
+          saveLocalCart(cartData);
+        } else {
+          // If quantity becomes 0, remove logic is usually handled by removeItem or separate check,
+          // but deduction usually stops at 1 or removes. Assuming stop at 1 based on name 'deduct' or similar to backend logic.
+          // IF backend logic removes it, we should do same. Backend usually decrements.
+          // Let's stick to simple decrement.
+          cartData[itemIndex].quantity -= 1;
+          if (cartData[itemIndex].quantity === 0) {
+            cartData.splice(itemIndex, 1);
+          } else {
+            cartData[itemIndex].total = cartData[itemIndex].quantity * price;
+          }
+          saveLocalCart(cartData);
+        }
       }
     }
   };
@@ -72,10 +110,18 @@ const GoshenShopProvider = (props) => {
         if (response.data.success) {
           setCartItems(response.data.cartData)
         }
-
       } catch (error) {
         console.log(error)
         toast.error(error.message)
+      }
+    } else {
+      // Local Cart Logic
+      let cartData = structuredClone(cartItems);
+      const itemIndex = cartData.findIndex(item => item.id === id);
+      if (itemIndex > -1) {
+        cartData[itemIndex].quantity += 1;
+        cartData[itemIndex].total = cartData[itemIndex].quantity * price;
+        saveLocalCart(cartData);
       }
     }
   };
@@ -110,15 +156,21 @@ const GoshenShopProvider = (props) => {
   }
 
   const removeItem = async (id) => {
-
-    try {
-      const response = await axios.post(backendUrl + '/api/cart/remove', { id }, { headers: { token } })
-      if (response.data.success) {
-        setCartItems(response.data.cartData)
+    if (token) {
+      try {
+        const response = await axios.post(backendUrl + '/api/cart/remove', { id }, { headers: { token } })
+        if (response.data.success) {
+          setCartItems(response.data.cartData)
+        }
+      } catch (error) {
+        console.log(error)
+        toast.error(error.message)
       }
-    } catch (error) {
-      console.log(error)
-      toast.error(error.message)
+    } else {
+      // Local Cart Logic
+      let cartData = structuredClone(cartItems);
+      cartData = cartData.filter(item => item.id !== id);
+      saveLocalCart(cartData);
     }
   };
 
@@ -150,8 +202,14 @@ const GoshenShopProvider = (props) => {
       getUserCart(localStorage.getItem('token'))
     }
     if (token) {
-      setToken(localStorage.getItem('token'))
-      getUserCart(localStorage.getItem('token'))
+      // setToken(localStorage.getItem('token')) // Redundant setToken
+      getUserCart(token) // Use token from state
+    } else {
+      // Load Guest Cart
+      const localCart = localStorage.getItem('guestCart');
+      if (localCart) {
+        setCartItems(JSON.parse(localCart));
+      }
     }
   }, [token])
 
