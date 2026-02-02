@@ -10,7 +10,7 @@ const Groceries = () => {
   const { products, currency } = useContext(ShopContext);
   const [fruitProducts, setFruitProducts] = useState([]);
   const [result, setResult] = useState([]);
-  const [subCategory, setSubCategory] = useState(["Rice", "Noodles", "Cooking oil", "Salt", "Sugar", "Sauces", "Spices & seasoning", "Canned foods", "Dry beans & lentils", "Instant foods"])
+  const [subCategory, setSubCategory] = useState(["Rice", "Noodles", "Cooking oil", "Salt", "Sugar", "Sauces", "Spices & seasoning", "Canned foods", "Dry beans & lentils", "Instant foods", "Dry Food", "Corn & Maize"])
 
   useEffect(() => {
     const fruits = products.filter((item) => (item.category === 'Groceries'))

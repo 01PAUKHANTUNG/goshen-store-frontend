@@ -14,8 +14,7 @@ const Orders = () => {
             setLoading(true);
             const response = await axios.post(backendUrl + '/api/order/userorders', {}, { headers: { token } });
             if (response.data.success) {
-                // Reverse to show newest first
-                setOrderData(response.data.orders.reverse());
+                setOrderData(response.data.orders);
             }
         } catch (error) {
             console.error(error);
