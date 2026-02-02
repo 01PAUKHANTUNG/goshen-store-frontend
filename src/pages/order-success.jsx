@@ -129,8 +129,12 @@ const OrderSuccess = () => {
                         </div>
 
 
-                        {orderData.paymentMethod !== 'COD' && (
+                        {orderData.paymentMethod !== 'COD' ? (
                             <p className="text-center text-gray-500 font-medium mb-6 uppercase tracking-widest text-xs relative z-10">Official Receipt</p>
+                        ) : (
+                            <p className="text-center text-amber-600 font-bold mb-6 uppercase tracking-widest text-xs relative z-10 px-4">
+                                A receipt will be sent to your email address once your order is delivered.
+                            </p>
                         )}
                         <div className="space-y-4 text-sm text-gray-800 relative z-10">
                             <div className="flex justify-between border-b border-gray-200 pb-2">
