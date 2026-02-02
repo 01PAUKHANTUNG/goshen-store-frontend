@@ -128,7 +128,10 @@ const OrderSuccess = () => {
                             <p className="text-4xl font-black tracking-wider">GOSHEN STORE</p>
                         </div>
 
-                        <p className="text-center text-gray-500 font-medium mb-6 uppercase tracking-widest text-xs relative z-10">Official Receipt</p>
+
+                        {orderData.paymentMethod !== 'COD' && (
+                            <p className="text-center text-gray-500 font-medium mb-6 uppercase tracking-widest text-xs relative z-10">Official Receipt</p>
+                        )}
                         <div className="space-y-4 text-sm text-gray-800 relative z-10">
                             <div className="flex justify-between border-b border-gray-200 pb-2">
                                 <span className="font-bold">Order ID:</span>
@@ -183,7 +186,7 @@ const OrderSuccess = () => {
                 )}
 
                 <div className="flex flex-col gap-4 no-print" data-html2canvas-ignore="true">
-                    {orderData && (
+                    {orderData && orderData.paymentMethod !== 'COD' && (
                         <button
                             onClick={downloadReceipt}
                             className="w-full py-4 bg-amber-500 text-black rounded-[2rem] font-black uppercase tracking-[0.3em] text-xs shadow-xl shadow-amber-500/20 hover:bg-amber-400 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"

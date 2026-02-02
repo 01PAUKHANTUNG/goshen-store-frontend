@@ -38,6 +38,114 @@ const Orders = () => {
         return index >= 0 ? index : 0;
     };
 
+    const downloadReceipt = (order) => {
+        const receiptWindow = window.open('', '_blank');
+
+        const receiptHTML = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Receipt - Order ${order._id}</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #333; max-width: 800px; margin: 0 auto; }
+            .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #eee; }
+            h1 { font-size: 24px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 2px; }
+            h2 { font-size: 16px; margin: 0; color: #666; font-weight: normal; text-transform: uppercase; letter-spacing: 1px; }
+            .meta { display: flex; justify-content: space-between; margin-bottom: 40px; }
+            .meta-group h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #999; margin: 0 0 10px 0; }
+            .meta-group p { margin: 0 0 5px 0; font-size: 14px; font-weight: bold; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+            th { text-align: left; padding: 15px 0; border-bottom: 1px solid #eee; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #999; }
+            td { padding: 15px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+            .price-col { text-align: right; }
+            .totals { margin-left: auto; width: 300px; }
+            .total-row { display: flex; justify-content: space-between; padding: 10px 0; }
+            .total-row.final { border-top: 2px solid #000; margin-top: 10px; padding-top: 20px; font-size: 18px; font-weight: bold; }
+            .footer { margin-top: 60px; text-align: center; font-size: 12px; color: #999; }
+            .paid-stamp { 
+                position: absolute; top: 40px; right: 40px; 
+                border: 2px solid #22c55e; color: #22c55e; 
+                padding: 5px 15px; font-weight: bold; text-transform: uppercase; 
+                letter-spacing: 2px; transform: rotate(-10deg);
+                border-radius: 4px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="paid-stamp">PAID</div>
+          
+          <div class="header">
+            <h1>Goshen Store</h1>
+            <h2>Official Receipt</h2>
+          </div>
+          
+          <div class="meta">
+            <div class="meta-group">
+              <h3>Order Details</h3>
+              <p>ID: ${order._id}</p>
+              <p>Date: ${new Date(order.createdAt).toLocaleDateString()}</p>
+            </div>
+            <div class="meta-group">
+              <h3>Billed To</h3>
+              <p>${order.shippingAddress.firstName} ${order.shippingAddress.lastName}</p>
+              <p>${order.shippingAddress.email}</p>
+              <p>${order.shippingAddress.phone}</p>
+            </div>
+          </div>
+          
+          <h3>Items</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Item Description</th>
+                <th>Qty</th>
+                <th class="price-col">Price</th>
+                <th class="price-col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${order.items.map(item => `
+                <tr>
+                  <td>${item.name}</td>
+                  <td>${item.quantity}</td>
+                  <td class="price-col">$${item.price.toFixed(2)}</td>
+                  <td class="price-col">$${(item.price * item.quantity).toFixed(2)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          
+          <div class="totals">
+            <div class="total-row">
+              <span>Subtotal</span>
+              <span>$${(order.amount - 20).toFixed(2)}</span>
+            </div>
+            <div class="total-row">
+              <span>Delivery Fee</span>
+              <span>$20.00</span>
+            </div>
+            <div class="total-row final">
+              <span>Total Paid</span>
+              <span>$${order.amount.toFixed(2)}</span>
+            </div>
+          </div>
+          
+          <div class="footer">
+            <p>Thank you for shopping with Goshen Store!</p>
+            <p>${order.paymentMethod} Payment • Status: ${order.paymentStatus.toUpperCase()}</p>
+          </div>
+          
+          <script>
+            window.onload = function() { window.print(); }
+          </script>
+        </body>
+        </html>
+      `;
+
+        receiptWindow.document.write(receiptHTML);
+        receiptWindow.document.close();
+    };
+
     return (
         <div className='min-h-screen bg-[#f8f9fa] py-12 md:py-20'>
             <div className='max-w-[1440px] mx-auto px-6 md:px-12'>
@@ -146,12 +254,31 @@ const Orders = () => {
                                                     })}
                                                 </div>
 
-                                                <div className='mt-10 pt-8 border-t border-gray-50 flex flex-wrap gap-4'>
-                                                    <div className='flex items-center gap-2'>
-                                                        <div className={`w-2 h-2 rounded-full ${order.paymentStatus === 'paied' ? 'bg-green-500' : 'bg-orange-500'}`}></div>
-                                                        <p className='text-[10px] font-black text-gray-400 uppercase tracking-widest'>Payment: {order.paymentStatus}</p>
+                                                <div className='mt-10 pt-8 border-t border-gray-50 flex flex-wrap gap-4 items-center justify-between'>
+                                                    <div className='flex flex-wrap gap-4'>
+                                                        <div className='flex items-center gap-2'>
+                                                            <div className={`w-2 h-2 rounded-full ${order.paymentStatus === 'paid' ? 'bg-green-500' : 'bg-orange-500'}`}></div>
+                                                            <p className='text-[10px] font-black text-gray-400 uppercase tracking-widest'>Payment: {order.paymentStatus}</p>
+                                                        </div>
+                                                        <div className='flex items-center gap-2'>
+                                                            <div className={`w-2 h-2 rounded-full ${order.paymentMethod === 'COD' ? 'bg-amber-500' : 'bg-blue-500'}`}></div>
+                                                            <p className='text-[10px] font-black text-gray-400 uppercase tracking-widest'>
+                                                                Method: {order.paymentMethod === 'COD' ? 'Cash on Delivery' :
+                                                                    order.paymentMethod?.includes('Stripe') || order.paymentMethod === 'stripe' ? 'Stripe' :
+                                                                        order.paymentMethod || 'N/A'}
+                                                            </p>
+                                                        </div>
                                                     </div>
 
+                                                    {order.paymentStatus === 'paid' && (
+                                                        <button
+                                                            onClick={() => downloadReceipt(order)}
+                                                            className='flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-xl transition-all shadow-lg shadow-black/5 hover:transform hover:-translate-y-0.5'
+                                                        >
+                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                                            <span className='text-[10px] font-black uppercase tracking-widest'>Download Receipt</span>
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
 
