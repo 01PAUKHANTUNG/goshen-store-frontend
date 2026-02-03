@@ -168,7 +168,7 @@ const Login = () => {
           >
             {currentState === 'Log In' ? 'Log In' : 'Create Account'}
           </button>
-          <Link to='/' className='w-full text-center py-5 mt-4 bg-green-600 text-white rounded-3xl font-black uppercase tracking-[0.2em] text-sm shadow-xl shadow-black/10 transition-all hover:bg-green-800 hover:scale-[1.02] active:scale-[0.98]'> Countinous Guest</Link>
+          <Link to='/' className='w-full text-center py-5 mt-4 bg-green-600 text-white rounded-3xl font-black uppercase tracking-[0.2em] text-sm shadow-xl shadow-black/10 transition-all hover:bg-green-800 hover:scale-[1.02] active:scale-[0.98]'> Continue as Guest</Link>
         </form>
       </motion.div>
     </div>
