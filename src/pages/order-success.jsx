@@ -171,7 +171,9 @@ const OrderSuccess = () => {
                             {/* Delivery Fee */}
                             <div className="flex justify-between pt-3 border-t border-gray-200">
                                 <span className="font-semibold text-sm">Delivery Fee:</span>
-                                <span className="font-semibold text-sm">${Number(delivery).toFixed(2)}</span>
+                                <span className="font-semibold text-sm">
+                                    ${Number(orderData?.deliveryFee !== undefined ? orderData.deliveryFee : delivery).toFixed(2)}
+                                </span>
                             </div>
 
                             <div className="flex justify-between pt-4 mt-4 border-t-2 border-gray-300">

@@ -19,7 +19,7 @@ const GoshenShopProvider = (props) => {
 
 
   const currency = "$"
-  const delivery = 20.00;
+  const [delivery, setDelivery] = useState(20.00);
 
   const decrease = () => {
     if (quantity > 1) {
@@ -192,8 +192,20 @@ const GoshenShopProvider = (props) => {
   }
 
 
+  const getSettings = async () => {
+    try {
+      const response = await axios.get(backendUrl + '/api/settings/get')
+      if (response.data.success) {
+        setDelivery(response.data.settings.deliveryFee)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     getProductsData()
+    getSettings()
   }, [])
 
   useEffect(() => {
