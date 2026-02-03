@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../context/GoshenContext.jsx';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { Link } from 'react-router';
 
 const Login = () => {
   const [currentState, setCurrentState] = useState('Log In');
@@ -132,9 +133,7 @@ const Login = () => {
           )}
 
           <div className='flex items-center justify-between px-2'>
-            {currentState === 'Log In' && (
-              <p className='text-xs font-bold text-gray-400 cursor-pointer hover:text-black transition-colors'>Forgot password?</p>
-            )}
+
             <div className='flex items-center gap-1.5 ml-auto'>
               {currentState === 'Log In' ? (
                 <>
@@ -157,6 +156,7 @@ const Login = () => {
                   >
                     Login
                   </button>
+
                 </>
               )}
             </div>
@@ -168,6 +168,7 @@ const Login = () => {
           >
             {currentState === 'Log In' ? 'Log In' : 'Create Account'}
           </button>
+          <Link to='/' className='w-full text-center py-5 mt-4 bg-green-600 text-white rounded-3xl font-black uppercase tracking-[0.2em] text-sm shadow-xl shadow-black/10 transition-all hover:bg-green-800 hover:scale-[1.02] active:scale-[0.98]'> Countinous Guest</Link>
         </form>
       </motion.div>
     </div>
