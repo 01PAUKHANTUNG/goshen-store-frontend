@@ -64,6 +64,7 @@ const Payment = () => {
           console.log("responseStripe:", responseStripe);
 
           if (responseStripe.data.success) {
+            toast.dismiss(loadToast);
             setSessionUrl(responseStripe.data.session_url);
           } else {
             toast.update(loadToast, { render: responseStripe.data.message, type: "error", isLoading: false, autoClose: 3000 });
@@ -78,9 +79,9 @@ const Payment = () => {
   useEffect(() => {
     // Guest checkout allowed, so no check for token
     if (sessionUrl) {
-      window.open(sessionUrl, '_blank');
+      window.location.replace(sessionUrl);
     }
-  }, [token, sessionUrl])
+  }, [sessionUrl])
 
   return (
     <div className='min-h-screen bg-[#f8f9fa] py-12 md:py-20'>

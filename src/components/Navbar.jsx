@@ -396,7 +396,7 @@ const Navbar = () => {
                 </div>
                 <button onClick={() => { setMobileSearch(false); setSearchText(""); setShowDropdown(false) }} className='text-gray-400 font-bold'>Cancel</button>
               </div>
-              <div className='overflow-y-auto max-h-[70vh]'>
+              <div className='overflow-y-auto bg-white max-h-[70vh]'>
                 {filtered.map(item => (
                   <Link key={item._id} to={`/product/${item._id}`} onClick={() => { setMobileSearch(false); setSearchText(""); setShowDropdown(false) }} className='flex items-center gap-4 p-4 border-b border-gray-50'>
                     <img src={item.image} className='w-16 h-16 rounded-xl object-cover bg-gray-50' alt='' />

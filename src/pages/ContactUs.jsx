@@ -36,7 +36,7 @@ const ContactUs = () => {
 
       const response = await axios.post(backendUrl + '/api/contact/add', payload, token ? { headers: { token } } : {});
       if (response.data.success) {
-        toast.success(response.data.message);
+        toast.success("Message sent! You'll receive a reply via email, or log in with this email to see it in your dashboard.");
         setFormData({ name: '', email: '', subject: 'Order Inquiry', message: '' });
       } else {
         toast.error(response.data.message);
