@@ -22,25 +22,19 @@ const ContactUs = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Decode user ID if token exists (simple approach) or just pass a flag
-      // Better: Backend authUser middleware will handle it if we send token, 
-      // but /add is currently public. Let's pass userId explicitly if logged in.
-
+     
       const payload = { ...formData };
-      if (token) {
-        // We can't easily get userId here without decoding token, 
-        // but we can send the token in headers and let backend handle it,
-        // or just send a dummy field and let backend extract from token.
-        // Let's just send the token in headers for /add too if available.
-      }
+      if (token) {  }
 
       const response = await axios.post(backendUrl + '/api/contact/add', payload, token ? { headers: { token } } : {});
+
       if (response.data.success) {
         toast.success("Message sent! You'll receive a reply via email, or log in with this email to see it in your dashboard.");
         setFormData({ name: '', email: '', subject: 'Order Inquiry', message: '' });
       } else {
         toast.error(response.data.message);
       }
+
     } catch (error) {
       console.log(error);
       toast.error(error.message);
@@ -56,6 +50,7 @@ const ContactUs = () => {
         <div className='grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-start'>
 
           {/* LEFT COLUMN: Contact Info */}
+          
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -103,6 +98,8 @@ const ContactUs = () => {
           </motion.div>
 
           {/* RIGHT COLUMN: Contact Form */}
+
+          {token ? 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -136,15 +133,20 @@ const ContactUs = () => {
                 <textarea required name="message" value={formData.message} onChange={onChangeHandler} rows="4" placeholder="How can we help?" className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold placeholder:text-gray-300 resize-none'></textarea>
               </div>
 
+              
+
               <button disabled={loading} type="submit" className='w-full py-5 bg-black text-white rounded-[1.5rem] md:rounded-[2rem] font-black uppercase tracking-[0.3em] text-sm shadow-xl shadow-black/10 hover:bg-gray-800 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed'>
                 {loading ? 'Sending...' : 'Send Message'}
-              </button>
+              </button> 
+              
+               
 
               <p className='text-center text-[10px] font-bold text-gray-300 uppercase tracking-widest'>
                 Typical response time: Under 24 hours
               </p>
             </form>
           </motion.div>
+          :  '' }
 
         </div>
       </div>

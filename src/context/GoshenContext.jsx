@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 export const ShopContext = createContext();
 
 
-
 const GoshenShopProvider = (props) => {
   const [cartItems, setCartItems] = useState([])
   const [quantity, setQuantity] = useState(1);
