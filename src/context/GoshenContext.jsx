@@ -39,28 +39,34 @@ const GoshenShopProvider = (props) => {
 
   const addToCart = async (id, quantity, price) => {
     let cartData = structuredClone(cartItems);
-
+   
     if (token) {
+       console.log("I'm return")
       try {
         const response = await axios.post(backendUrl + '/api/cart/add', { id, quantity, price }, { headers: { token } })
         if (response.data.success) {
           setCartItems(response.data.cartData)
           toast.success(response.data.message);
+          setQuantity(1)
         }
-      } catch (error) {
+       } catch (error) {
         console.log(error)
         toast.error(error.message)
-      }
-    } else {
+       }
+      } 
+    else {
       // Local Cart Logic
+       console.log("I'm return so that no token")
       const itemIndex = cartData.findIndex(item => item.id === id);
       if (itemIndex > -1) {
         cartData[itemIndex].quantity += quantity;
         cartData[itemIndex].total = cartData[itemIndex].quantity * price;
+        
       } else {
         cartData.push({ id, quantity, price, total: quantity * price });
       }
       saveLocalCart(cartData);
+      setQuantity(1)
       toast.success("Added to Cart");
     }
   };
@@ -87,10 +93,7 @@ const GoshenShopProvider = (props) => {
           cartData[itemIndex].total = cartData[itemIndex].quantity * price;
           saveLocalCart(cartData);
         } else {
-          // If quantity becomes 0, remove logic is usually handled by removeItem or separate check,
-          // but deduction usually stops at 1 or removes. Assuming stop at 1 based on name 'deduct' or similar to backend logic.
-          // IF backend logic removes it, we should do same. Backend usually decrements.
-          // Let's stick to simple decrement.
+        
           cartData[itemIndex].quantity -= 1;
           if (cartData[itemIndex].quantity === 0) {
             cartData.splice(itemIndex, 1);
