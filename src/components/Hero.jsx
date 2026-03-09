@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 const Hero = () => {
   return (
     <div className="relative overflow-hidden bg-white rounded-[3rem] border border-gray-50 shadow-2xl shadow-black/5">
-      <div className="max-w-7xl mx-auto px-10 py-20 flex flex-col md:flex-row items-center justify-between gap-16">
+      <div className="max-w-8xl mx-auto px-10 py-20 flex flex-col md:flex-row items-center justify-between gap-16">
 
         {/* LEFT SIDE TEXT */}
         <motion.div
@@ -21,7 +21,7 @@ const Hero = () => {
           <h1 className="text-5xl md:text-7xl font-black leading-[1.1] text-gray-900 tracking-tight">
             Freshness <br /> <span className='text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-amber-400'>Delivered</span> <br /> To Your Door.
           </h1>
-          <p className="text-gray-500 text-lg font-medium leading-relaxed max-w-md">
+          <p className="text-gray-500  font-medium leading-relaxed max-w-md">
             Goshen Store Ringwood is your local hub for premium groceries, farm-fresh produce, and high-quality homewares.
           </p>
 
@@ -32,14 +32,14 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.9, rotate: 2 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="md:w-1/2 relative"
+          className="md:w-[900px] relative"
         >
           {/* Decorative glow */}
           <div className='absolute -inset-4 bg-gradient-to-br from-amber-400/20 to-purple-400/20 rounded-[4rem] blur-3xl -z-10'></div>
           <img
             src={banner}
             alt="Hero Banner"
-            className="rounded-[3rem] shadow-2xl relative z-10 object-cover aspect-[4/3]"
+            className="rounded-[3rem] shadow-2xl relative z-10 object-cover aspect-[7/3]"
           />
         </motion.div>
       </div>
