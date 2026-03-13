@@ -4,7 +4,7 @@ import { ShopContext } from '../context/GoshenContext'
 
 const Currency = () => {
    const { currencies, isLoadingSettings } = useContext(ShopContext)
-   const [amount, setAmount] = useState(100)
+   const [amount, setAmount] = useState(1)
    const [selectedCurrency, setSelectedCurrency] = useState('')
 
    useEffect(() => {
@@ -52,6 +52,46 @@ const Currency = () => {
    const itemVariants = {
       hidden: { y: 20, opacity: 0 },
       visible: { y: 0, opacity: 1 }
+   }
+
+   // Map currency codes to country codes for flagcdn
+   const getFlagUrl = (currencyCode, customFlag) => {
+      // If they provided a URL or an actual emoji flag that's not text, we could try to use it
+      // But to ensure it works, let's map common codes, or fallback to the letter prefix
+      const codeMap = {
+         'MMK': 'mm',
+         'INR': 'in',
+         'THB': 'th',
+         'MYR': 'my',
+         'SGD': 'sg',
+         'USD': 'us',
+         'EUR': 'eu', // eu is a valid flagcdn code
+         'GBP': 'gb',
+         'AUD': 'au',
+         'CAD': 'ca',
+         'JPY': 'jp',
+         'CNY': 'cn',
+         'NZD': 'nz',
+         'IDR': 'id',
+         'PHP': 'ph',
+         'VND': 'vn',
+         'KRW': 'kr'
+      };
+
+      const isoCode = codeMap[currencyCode?.toUpperCase()];
+
+      if (isoCode) {
+         return `https://flagcdn.com/w40/${isoCode}.png`;
+      }
+
+      // Fallback: Use the first two letters of the currency code as the country code
+      // works for many currencies like AUD -> au, CAD -> ca, JPY -> jp
+      if (currencyCode && currencyCode.length >= 2) {
+         const fallbackCode = currencyCode.substring(0, 2).toLowerCase();
+         return `https://flagcdn.com/w40/${fallbackCode}.png`;
+      }
+
+      return null;
    }
 
    return (
@@ -116,7 +156,12 @@ const Currency = () => {
                         <div className='flex gap-3'>
                            <div className='flex-1 bg-white/5 border border-white/10 rounded-2xl py-4 px-6 font-black text-2xl flex items-center justify-between'>
                               <span>{result}</span>
-                              <span className='text-amber-500 text-sm'>{selectedCurrency}</span>
+                              <div className='flex items-center gap-2'>
+                                 {getFlagUrl(selectedCurrency) && (
+                                    <img src={getFlagUrl(selectedCurrency)} alt="flag" className='w-5 h-auto rounded-[2px]' />
+                                 )}
+                                 <span className='text-amber-500 text-sm'>{selectedCurrency}</span>
+                              </div>
                            </div>
                            <select
                               value={selectedCurrency}
@@ -146,7 +191,7 @@ const Currency = () => {
                   className='lg:col-span-7 premium-card overflow-hidden bg-white'
                >
                   <div className='p-8 border-b border-gray-50 flex items-center justify-between'>
-                     <h2 className='text-xl font-black uppercase tracking-widest'>Today's Rates</h2>
+                     <h2 className='text-xl font-black uppercase tracking-widest'>Today's Rates </h2>
                      <div className='flex items-center gap-2'>
                         <div className='w-2 h-2 bg-green-500 rounded-full animate-pulse'></div>
                         <span className='text-[10px] font-black text-gray-400 uppercase tracking-widest'>Updated Just Now</span>
@@ -164,36 +209,47 @@ const Currency = () => {
                            </tr>
                         </thead>
                         <tbody className='divide-y divide-gray-50'>
-                           {currencies.map((rate) => (
-                              <motion.tr
-                                 key={rate.code}
-                                 variants={itemVariants}
-                                 className='hover:bg-gray-50/80 transition-colors group'
-                              >
-                                 <td className='px-8 py-6'>
-                                    <div className='flex items-center gap-4'>
-                                       <span className='text-2xl'>{rate.flag}</span>
-                                       <div>
-                                          <p className='font-black text-gray-900'>{rate.country}</p>
-                                          <p className='text-[10px] text-gray-400 font-bold uppercase tracking-wider'>{rate.code}</p>
+                           {currencies.map((rate) => {
+                              const flagUrl = getFlagUrl(rate.code);
+                              return (
+                                 <motion.tr
+                                    key={rate.code}
+                                    variants={itemVariants}
+                                    className='hover:bg-gray-50/80 transition-colors group'
+                                 >
+                                    <td className='px-8 py-6'>
+                                       <div className='flex items-center gap-4'>
+                                          <div className='w-10 h-7 shrink-0 flex items-center justify-center bg-gray-100 rounded-[2px] overflow-hidden border border-gray-200'>
+                                             {flagUrl ? (
+                                                <img src={flagUrl} alt={`${rate.country} flag`} className='w-full h-full object-cover' />
+                                             ) : (
+                                                <span className='text-sm'>{rate.flag}</span>
+                                             )}
+                                          </div>
+                                          <div>
+                                             <p className='font-black text-gray-900'>{rate.country}</p>
+                                             <p className='text-[10px] text-gray-400 font-bold uppercase tracking-wider'>{rate.code}</p>
+                                          </div>
                                        </div>
-                                    </div>
-                                 </td>
-                                 <td className='px-8 py-6 font-bold text-gray-900'>{rate.unit}</td>
-                                 <td className='px-8 py-6'>
-                                    <div className='flex flex-col'>
-                                       <span className='font-black text-lg text-gray-900'>{rate.buy}</span>
-                                       <span className='text-[10px] text-gray-400 font-bold uppercase'>{rate.code}</span>
-                                    </div>
-                                 </td>
-                                 <td className='px-8 py-6'>
-                                    <div className='flex flex-col text-right md:text-left'>
-                                       <span className='font-black text-lg text-amber-600'>{rate.sell}</span>
-                                       <span className='text-[10px] text-gray-400 font-bold uppercase'>{rate.code}</span>
-                                    </div>
-                                 </td>
-                              </motion.tr>
-                           ))}
+                                    </td>
+                                    <td className='px-8 py-6 font-bold text-gray-900'>{rate.unit} AUD </td>
+
+                                    <td className='px-8 py-6'>
+                                       <div className='flex flex-col'>
+
+                                          <span className='font-black text-lg text-gray-900'>{rate.buy} </span>
+                                          <span className='text-[10px] text-gray-400 font-bold uppercase'>{rate.code}</span>
+                                       </div>
+                                    </td>
+                                    <td className='px-8 py-6'>
+                                       <div className='flex flex-col text-right md:text-left'>
+                                          <span className='font-black text-lg text-amber-600'>{rate.sell}</span>
+                                          <span className='text-[10px] text-gray-400 font-bold uppercase'>{rate.code}</span>
+                                       </div>
+                                    </td>
+                                 </motion.tr>
+                              )
+                           })}
                         </tbody>
                      </table>
                   </div>
