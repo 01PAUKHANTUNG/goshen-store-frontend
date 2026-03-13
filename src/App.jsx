@@ -20,6 +20,7 @@ import Payment from './pages/Payment'
 import Orders from './pages/Orders'
 import OrderSuccess from './pages/order-success'
 import Inquiries from './pages/Inquiries'
+import Currency from './pages/Currency'
 
 const App = () => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
         <Route path='/orders' element={<Orders />} />
         <Route path='/order-success' element={<OrderSuccess />} />
         <Route path='/my-inquiries' element={<Inquiries />} />
+        <Route path='/currency' element={<Currency />} />
       </Routes>
       <Footer />
     </div>

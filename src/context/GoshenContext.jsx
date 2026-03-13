@@ -13,6 +13,8 @@ const GoshenShopProvider = (props) => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
   const [token, setToken] = useState('')
+  const [currencies, setCurrencies] = useState([])
+  const [isLoadingSettings, setIsLoadingSettings] = useState(true)
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000"
 
@@ -38,9 +40,9 @@ const GoshenShopProvider = (props) => {
 
   const addToCart = async (id, quantity, price) => {
     let cartData = structuredClone(cartItems);
-   
+
     if (token) {
-       console.log("I'm return")
+      console.log("I'm return")
       try {
         const response = await axios.post(backendUrl + '/api/cart/add', { id, quantity, price }, { headers: { token } })
         if (response.data.success) {
@@ -48,19 +50,19 @@ const GoshenShopProvider = (props) => {
           toast.success(response.data.message);
           setQuantity(1)
         }
-       } catch (error) {
+      } catch (error) {
         console.log(error)
         toast.error(error.message)
-       }
-      } 
+      }
+    }
     else {
       // Local Cart Logic
-       console.log("I'm return so that no token")
+      console.log("I'm return so that no token")
       const itemIndex = cartData.findIndex(item => item.id === id);
       if (itemIndex > -1) {
         cartData[itemIndex].quantity += quantity;
         cartData[itemIndex].total = cartData[itemIndex].quantity * price;
-        
+
       } else {
         cartData.push({ id, quantity, price, total: quantity * price });
       }
@@ -92,7 +94,7 @@ const GoshenShopProvider = (props) => {
           cartData[itemIndex].total = cartData[itemIndex].quantity * price;
           saveLocalCart(cartData);
         } else {
-        
+
           cartData[itemIndex].quantity -= 1;
           if (cartData[itemIndex].quantity === 0) {
             cartData.splice(itemIndex, 1);
@@ -197,11 +199,15 @@ const GoshenShopProvider = (props) => {
   const getSettings = async () => {
     try {
       const response = await axios.get(backendUrl + '/api/settings/get')
+      console.log("Frontend fetched settings:", response.data.settings)
       if (response.data.success) {
         setDelivery(response.data.settings.deliveryFee)
+        setCurrencies(response.data.settings.currencies || [])
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsLoadingSettings(false)
     }
   }
 
@@ -231,7 +237,7 @@ const GoshenShopProvider = (props) => {
   const value = {
     products, currency, addToCart, cartItems, setCartItems, quantity, decrease, increase,
     getItemCount, getCartTotal, updateQuantityDeduct, updateQuantityAdd, removeItem,
-    delivery, navigate, backendUrl, token, setToken
+    delivery, navigate, backendUrl, token, setToken, currencies, isLoadingSettings
   }
   return (
     <ShopContext.Provider value={value} >
