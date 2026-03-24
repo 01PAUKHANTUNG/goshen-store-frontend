@@ -130,12 +130,11 @@ const Cart = () => {
                   <span className='text-xl font-bold text-gray-900'>{currency}{getCartTotal().toFixed(2)}</span>
                 </div>
 
-                <div className='flex justify-between items-center'>
+                <div className='flex justify-between items-center opacity-50'>
                   <div className='flex flex-col'>
                     <span className='text-gray-400 font-bold uppercase tracking-widest text-[10px]'>Delivery</span>
-                    <span className='text-[10px] text-green-500 font-black tracking-widest uppercase'>Goshen Standard</span>
                   </div>
-                  <span className='text-xl font-bold text-gray-900'>{currency}{(getCartTotal() > 0 ? delivery : 0).toFixed(2)}</span>
+                  <span className='text-xs font-bold text-gray-500'>Calculated at Checkout</span>
                 </div>
 
                 <div className='h-px bg-gray-100 my-4'></div>
@@ -143,7 +142,7 @@ const Cart = () => {
                 <div className='flex justify-between items-end'>
                   <span className='text-gray-900 font-black uppercase tracking-[0.2em] text-sm'>Estimated Total</span>
                   <div className='text-right'>
-                    <p className='text-3xl md:text-4xl font-black text-gray-900 leading-none'>{currency}{(getCartTotal() > 0 ? getCartTotal() + delivery : 0).toFixed(2)}</p>
+                    <p className='text-3xl md:text-4xl font-black text-gray-900 leading-none'>{currency}{(getCartTotal() > 0 ? getCartTotal() : 0).toFixed(2)}</p>
                     <p className='text-[10px] font-bold text-gray-400 mr-1 mt-1'>incl. all local taxes</p>
                   </div>
                 </div>

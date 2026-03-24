@@ -21,6 +21,12 @@ const GoshenShopProvider = (props) => {
 
   const currency = "$"
   const [delivery, setDelivery] = useState(20.00);
+  const [deliveryThresholdKm, setDeliveryThresholdKm] = useState(30);
+  const [feeBelowThreshold, setFeeBelowThreshold] = useState(10);
+  const [feeAboveThreshold, setFeeAboveThreshold] = useState(12);
+  const [freeDeliveryThresholdAmount, setFreeDeliveryThresholdAmount] = useState(200);
+  const [storeLat, setStoreLat] = useState(0);
+  const [storeLng, setStoreLng] = useState(0);
 
   const decrease = () => {
     if (quantity > 1) {
@@ -201,8 +207,15 @@ const GoshenShopProvider = (props) => {
       const response = await axios.get(backendUrl + '/api/settings/get')
       console.log("Frontend fetched settings:", response.data.settings)
       if (response.data.success) {
-        setDelivery(response.data.settings.deliveryFee)
-        setCurrencies(response.data.settings.currencies || [])
+        const s = response.data.settings;
+        setDelivery(s.deliveryFee)
+        setDeliveryThresholdKm(s.deliveryThresholdKm || 30)
+        setFeeBelowThreshold(s.feeBelowThreshold || 10)
+        setFeeAboveThreshold(s.feeAboveThreshold || 12)
+        setFreeDeliveryThresholdAmount(s.freeDeliveryThresholdAmount || 200)
+        setStoreLat(s.storeLat || 0)
+        setStoreLng(s.storeLng || 0)
+        setCurrencies(s.currencies || [])
       }
     } catch (error) {
       console.log(error)
@@ -233,11 +246,22 @@ const GoshenShopProvider = (props) => {
     }
   }, [token])
 
+  // Update global delivery fee based on cart total threshold
+  useEffect(() => {
+    const total = getCartTotal();
+    if (total >= freeDeliveryThresholdAmount && freeDeliveryThresholdAmount > 0) {
+      setDelivery(0);
+    } else if (delivery === 0 && total < freeDeliveryThresholdAmount) {
+      // Reset to default base fee if it drops below threshold
+      setDelivery(feeBelowThreshold);
+    }
+  }, [cartItems, products, freeDeliveryThresholdAmount, delivery, feeBelowThreshold])
 
   const value = {
     products, currency, addToCart, cartItems, setCartItems, quantity, decrease, increase,
     getItemCount, getCartTotal, updateQuantityDeduct, updateQuantityAdd, removeItem,
-    delivery, navigate, backendUrl, token, setToken, currencies, isLoadingSettings
+    delivery, setDelivery, navigate, backendUrl, token, setToken, currencies, isLoadingSettings,
+    deliveryThresholdKm, feeBelowThreshold, feeAboveThreshold, freeDeliveryThresholdAmount, storeLat, storeLng
   }
   return (
     <ShopContext.Provider value={value} >
