@@ -3,7 +3,7 @@ import { useParams } from 'react-router'
 import { ShopContext } from '../context/GoshenContext.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
-
+import SEO from '../components/SEO.jsx'
 const ProductItems = () => {
   const { products, currency, addToCart, cartItems, quantity, decrease, increase, token, navigate } = useContext(ShopContext);
   const { productId } = useParams();
@@ -34,6 +34,7 @@ const ProductItems = () => {
 
   return (
     <div className='min-h-screen bg-[#f8f9fa] py-8 md:py-16'>
+      <SEO title={`${productData.description} - Goshen Shop`} description={`Buy fresh ${productData.description} from Goshen Shop.`} />
       <div className='max-w-[1440px] mx-auto px-6 md:px-12'>
 
         {/* Breadcrumb / Back Navigation */}

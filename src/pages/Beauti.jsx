@@ -4,6 +4,7 @@ import Title from '../components/Title.jsx';
 import FilterBox from '../components/FilterBox.jsx';
 import Items from '../components/Items.jsx';
 import { motion } from 'framer-motion';
+import SEO from '../components/SEO.jsx'
 
 const Beauti = () => {
   const { products, currency } = useContext(ShopContext);
@@ -19,6 +20,7 @@ const Beauti = () => {
 
   return (
     <div className='max-w-[1440px] mx-auto px-6 md:px-12 py-8 md:py-12'>
+      <SEO title="Beauty & Cosmetics - Goshen Shop" description="Premium beauty and cosmetics products at Goshen Shop. Skincare, makeup and hair care." />
       <motion.div
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}

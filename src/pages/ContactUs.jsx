@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { ShopContext } from '../context/GoshenContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-
+import SEO from '../components/SEO.jsx'
 const ContactUs = () => {
   const { backendUrl, token } = useContext(ShopContext);
   const [loading, setLoading] = useState(false);
@@ -45,6 +45,7 @@ const ContactUs = () => {
 
   return (
     <div className='min-h-screen bg-[#f8f9fa] py-12 md:py-24'>
+      <SEO title="Contact Us - Goshen Shop" description="Get in touch with us in Ringwood East. Have a question? We're here to help you live a fresher life." />
       <div className='max-w-[1440px] mx-auto px-6 md:px-12'>
 
         <div className='grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-start'>

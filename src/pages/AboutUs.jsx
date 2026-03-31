@@ -1,10 +1,11 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import logo from '../assets/logo.jpg'
-
+import SEO from '../components/SEO.jsx'
 const AboutUs = () => {
   return (
     <div className='min-h-screen bg-white overflow-hidden py-12 md:py-16'>
+      <SEO title="About Us - Goshen Shop" description="Learn about Goshen Store's story, bringing the market to your kitchen from Ringwood with local first quality." />
       <div className='max-w-[1440px] mx-auto px-6 md:px-12'>
 
         {/* HERO SECTION */}

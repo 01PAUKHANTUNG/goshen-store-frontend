@@ -4,6 +4,7 @@ import Title from '../components/Title';
 import FilterBox from '../components/FilterBox';
 import Items from '../components/Items';
 import { motion } from 'framer-motion';
+import SEO from '../components/SEO.jsx'
 
 const Homewares = () => {
   const { products, currency } = useContext(ShopContext);
@@ -19,6 +20,7 @@ const Homewares = () => {
 
   return (
     <div className='max-w-[1440px] mx-auto px-6 md:px-12 py-8 md:py-12'>
+      <SEO title="Homewares - Goshen Shop" description="Explore our homewares collection at Goshen Shop. Kitchenware, cleaning supplies and more." />
       <motion.div
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}

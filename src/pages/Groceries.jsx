@@ -4,6 +4,7 @@ import Title from '../components/Title';
 import FilterBox from '../components/FilterBox';
 import Items from '../components/Items';
 import { motion } from 'framer-motion';
+import SEO from '../components/SEO.jsx'
 
 
 const Groceries = () => {
@@ -20,6 +21,7 @@ const Groceries = () => {
 
   return (
     <div className='max-w-[1440px] mx-auto px-6 md:px-12 py-8 md:py-12'>
+      <SEO title="Groceries - Goshen Shop" description="Essential groceries delivered to your home. Rice, noodles, spices and more at Goshen Shop." />
       <motion.div
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
