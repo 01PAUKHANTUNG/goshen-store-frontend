@@ -85,8 +85,15 @@ const Cart = () => {
                         </button>
                         <span className='text-xl font-black w-8 text-center'>{itemQuantity(item._id)}</span>
                         <button
-                          className='w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-sm hover:bg-black hover:text-white transition-all font-black text-xl'
-                          onClick={() => updateQuantityAdd(item._id, itemQuantity(item._id), item.price)}
+                          className='w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-sm hover:bg-black hover:text-white transition-all font-black text-xl disabled:opacity-30 disabled:cursor-not-allowed'
+                          disabled={itemQuantity(item._id) >= (item.stockQuantity ?? 0)}
+                          onClick={() => {
+                            if (itemQuantity(item._id) >= (item.stockQuantity ?? 0)) {
+                              toast.error(`Only ${item.stockQuantity} in stock!`);
+                            } else {
+                              updateQuantityAdd(item._id, itemQuantity(item._id), item.price);
+                            }
+                          }}
                         >
                           +
                         </button>
