@@ -78,7 +78,7 @@ const Navbar = () => {
   }
 
   useEffect(() => {
-    setProductData(products.filter((item) => item.stockAvaiable === true))
+    setProductData(products)
     const handleScroll = () => {
       if (window.scrollY > 80 && !isScrolled) setIsScrolled(true);
       if (window.scrollY < 20 && isScrolled) setIsScrolled(false);
@@ -140,7 +140,7 @@ const Navbar = () => {
                             <Link to={`/product/${item._id}`} className="flex items-center gap-4">
                               <img src={item.image} className="w-14 h-14 rounded-xl object-cover bg-gray-50" alt='' />
                               <div className='text-left'>
-                                <p className='font-bold text-gray-900 leading-tight text-sm'>{item.description}</p>
+                                <p className='font-bold text-gray-900 leading-tight text-sm'>{item.description}{!item.stockAvaiable && <span className='ml-2 text-xs font-bold text-red-600'>Out of Stock</span>}</p>
                                 <p className='text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1'>{item.category}</p>
                               </div>
                             </Link>
@@ -296,7 +296,7 @@ const Navbar = () => {
                             <li key={item._id} onClick={() => { setShowDropdown(false); setSearchText("") }} className="hover:bg-gray-50 rounded-xl p-2 transition-colors">
                               <Link to={`/product/${item._id}`} className="flex items-center gap-3">
                                 <img src={item.image} className="w-10 h-10 rounded-lg object-cover" alt='' />
-                                <p className='font-bold text-gray-900 text-[10px] leading-tight truncate text-left'>{item.description}</p>
+                                <p className='font-bold text-gray-900 text-[10px] leading-tight truncate text-left'>{item.description}{!item.stockAvaiable && <span className='ml-2 text-xs font-bold text-red-600'>Out of Stock</span>}</p>
                               </Link>
                             </li>
                           ))}
