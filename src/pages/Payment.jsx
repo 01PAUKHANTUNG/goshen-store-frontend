@@ -32,7 +32,7 @@ const Payment = () => {
   const [sessionUrl, setSessionUrl] = useState('');
   const [isCalculating, setIsCalculating] = useState(false);
   const [distance, setDistance] = useState(null);
-  const [showMap, setShowMap] = useState(false);
+  const [addressMethod, setAddressMethod] = useState('map'); // 'map' or 'manual'
   const [mapPosition, setMapPosition] = useState(() => {
     const saved = localStorage.getItem('goshen_last_map_pos');
     return saved ? JSON.parse(saved) : [-37.8136, 144.9631];
@@ -122,20 +122,20 @@ const Payment = () => {
     const total = getCartTotal();
     
     // Check for Free Delivery Threshold first
-    if (total >= freeDeliveryThresholdAmount) {
+    if (total >= freeDeliveryThresholdAmount && freeDeliveryThresholdAmount > 0) {
       setDelivery(0);
       setDistance(0);
       return;
     }
 
-    if (!formData.street || !formData.city || !formData.country) {
-      toast.info("Please fill street, city, and country to calculate delivery fee.");
+    if (!formData.street || !formData.city) {
+      toast.info("Please fill street and city to calculate delivery fee.");
       return;
     }
 
     setIsCalculating(true);
     try {
-      const address = `${formData.street}, ${formData.city}, ${formData.state}, ${formData.country}`;
+      const address = `${formData.street}, ${formData.city}, ${formData.state}, ${formData.country || 'Australia'}`;
       const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`);
       
       if (response.data && response.data.length > 0) {
@@ -148,10 +148,10 @@ const Payment = () => {
         } else {
           setDelivery(feeAboveThreshold);
         }
-        toast.success(`Delivery fee updated: $${dist < deliveryThresholdKm ? feeBelowThreshold : feeAboveThreshold} (${dist.toFixed(2)} km)`);
+        toast.success(`Distance calculated: ${dist.toFixed(2)} km. Fee updated.`);
       } else {
-        toast.error("Could not find coordinates for this address. Using default fee.");
-        setDelivery(feeAboveThreshold); // Default to higher fee if address not found
+        toast.error("Could not find coordinates for this address. Please try map pin.");
+        setDelivery(feeAboveThreshold); 
       }
     } catch (error) {
       console.error("Geocoding error:", error);
@@ -181,9 +181,8 @@ const Payment = () => {
   const onSubmitHandler = async (event) => {
     event.preventDefault()
     
-    if (!formData.street) {
-      toast.error("Please pin your location on the map before confirming your order.");
-      setShowMap(true); // Automatically open the map if it was closed
+    if (!formData.street || distance === null) {
+      toast.error("Please provide your delivery location (Map pin or Manual entry) before confirming.");
       return;
     }
 
@@ -269,62 +268,60 @@ const Payment = () => {
               <div className='space-y-8'>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
                   <div className='flex flex-col gap-2'>
-                    <label className='text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1'>First name</label>
+                    <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>First name</label>
                     <input required onChange={onChangeHandle} name='firstName' value={formData.firstName} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='John' />
                   </div>
                   <div className='flex flex-col gap-2'>
-                    <label className='text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1'>Last name</label>
+                    <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>Last name</label>
                     <input required onChange={onChangeHandle} name='lastName' value={formData.lastName} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Doe' />
                   </div>
                 </div>
 
                 <div className='flex flex-col gap-2'>
-                  <label className='text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1'>Email Address</label>
+                  <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>Email Address</label>
                   <input required onChange={onChangeHandle} name='email' value={formData.email} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="email" placeholder='john@example.com' />
                 </div>
 
+                
+
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
                   <div className='flex flex-col gap-2'>
-                    <label className='text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1'>Phone</label>
+                    <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>Phone</label>
                     <input required onChange={onChangeHandle} name='phone' value={formData.phone} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="number" placeholder='0400 000 000' />
                   </div>
                 </div>
 
-                {/* PINNED ADDRESS DISPLAY */}
-                <AnimatePresence>
-                  {formData.street && (
-                    <motion.div 
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className='bg-amber-50 p-6 rounded-[2rem] border border-amber-100'
+                <p className='text-orange-500 font-medium ml-1'>Please pin your location on map or type address</p>
+
+
+                <div className='flex flex-col gap-6'>
+                  <div className='flex p-1 bg-gray-100 rounded-2xl'>
+                    <button 
+                      type="button" 
+                      onClick={() => setAddressMethod('map')}
+                      className={`flex-1 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${addressMethod === 'map' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}
                     >
-                      <p className='text-[10px] font-black text-amber-600 uppercase tracking-widest mb-2'>Confirmed Delivery Location:</p>
-                      <p className='text-sm font-bold text-gray-900 leading-relaxed'>
-                        {formData.street}, {formData.city}, {formData.state} {formData.zipcode}, {formData.country}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      Select on Map
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => setAddressMethod('manual')}
+                      className={`flex-1 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${addressMethod === 'manual' ? 'bg-white shadow-sm text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                    >
+                      Enter Address
+                    </button>
+                  </div>
 
-                <div className='pt-4 flex flex-col gap-4'>
-                  <button 
-                    type="button" 
-                    onClick={() => setShowMap(!showMap)}
-                    className='w-full py-4 bg-gray-900 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-black transition-all flex items-center justify-center gap-2'
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    {showMap ? "Close Map" : "Pin Location on Map"}
-                  </button>
-
-                  <AnimatePresence>
-                    {showMap && (
+                  <AnimatePresence mode='wait'>
+                    {addressMethod === 'map' ? (
                       <motion.div 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className='overflow-hidden'
+                        key="map-view"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className='space-y-4'
                       >
-                        <div className='h-[300px] w-full rounded-2xl border-2 border-gray-100 overflow-hidden relative z-0 mb-4'>
+                        <div className='h-[350px] w-full rounded-2xl border-2 border-gray-100 overflow-hidden relative z-0'>
                           <MapContainer center={mapPosition} zoom={13} style={{ height: '100%', width: '100%' }}>
                             <ChangeView center={mapPosition} />
                             <TileLayer
@@ -335,16 +332,77 @@ const Payment = () => {
                             <MapEvents />
                           </MapContainer>
                         </div>
+                        <p className='text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest'>
+                          Click anywhere on the map to pin your location
+                        </p>
+                      </motion.div>
+                    ) : (
+                      <motion.div 
+                        key="manual-view"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className='space-y-6'
+                      >
+                        <div className='flex flex-col gap-2'>
+                          <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>Street</label>
+                          <input required onChange={onChangeHandle} name='street' value={formData.street} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Enter Your Area/Street' />
+                        </div>
+
+                        <div className='flex flex-col gap-2'>
+                          <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>Town/City</label>
+                          <input required onChange={onChangeHandle} name='city' value={formData.city} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Enter Your Town/City' />
+                        </div>
+
+                        <div className='grid grid-cols-2 gap-4'>
+                          <div className='flex flex-col gap-2'>
+                            <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>State</label>
+                            <input required onChange={onChangeHandle} name='state' value={formData.state} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Enter Your State' />
+                          </div>
+                          <div className='flex flex-col gap-2'>
+                            <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>Country</label>
+                            <input required onChange={onChangeHandle} name='country' value={formData.country} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Enter Your Country' />
+                          </div>
+                        </div>
+
+                        <button 
+                          type="button" 
+                          onClick={updateDeliveryFee}
+                          disabled={isCalculating}
+                          className='w-full py-4 bg-amber-500 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-amber-600 transition-all flex items-center justify-center gap-2'
+                        >
+                          {isCalculating ? (
+                            <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+                          ) : (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                          )}
+                          {isCalculating ? "Calculating..." : "Calculate Delivery Fee"}
+                        </button>
                       </motion.div>
                     )}
                   </AnimatePresence>
-
-                  {distance !== null && (
-                    <p className='text-center text-[10px] font-bold text-gray-400 mt-2 uppercase tracking-tighter'>
-                      Estimated Distance: <span className='text-amber-600'>{distance} KM</span>
-                    </p>
-                  )}
                 </div>
+
+                {/* STATUS & FEEDBACK */}
+                <AnimatePresence>
+                  {distance !== null && (
+                    <motion.div 
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className='bg-amber-50 p-6 rounded-[2rem] border border-amber-100 flex items-center justify-between'
+                    >
+                      <div>
+                        <p className='text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1'>Distance & Delivery</p>
+                        <p className='text-sm font-bold text-gray-900 leading-relaxed'>
+                          {distance} KM — {currency}{delivery.toFixed(2)} Fee
+                        </p>
+                      </div>
+                      <div className='bg-amber-400/20 p-3 rounded-2xl text-amber-600'>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path></svg>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.div>
           </div>
@@ -429,10 +487,6 @@ const Payment = () => {
                 </AnimatePresence>
               </div>
 
-              <div className='pt-6 flex items-center justify-center gap-2'>
-                <div className='w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse'></div>
-                <p className='text-[10px] font-black text-gray-300 uppercase tracking-widest leading-none'>SSL Encrypted Transaction</p>
-              </div>
             </motion.div>
           </aside>
         </form>
