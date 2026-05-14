@@ -90,7 +90,8 @@ const Orders = () => {
               <p>${order.shippingAddress.email}</p>
               <p>${order.shippingAddress.phone}</p>
               <p>${order.shippingAddress.street}, ${order.shippingAddress.city}</p>
-              <p>${order.shippingAddress.state}, ${order.shippingAddress.country}</p>
+              <p>${order.shippingAddress.state} ${order.shippingAddress.zipcode || ''}</p>
+              <p>${order.shippingAddress.country}</p>
             </div>
           </div>
           

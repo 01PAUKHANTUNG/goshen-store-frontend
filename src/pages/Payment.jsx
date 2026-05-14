@@ -135,7 +135,7 @@ const Payment = () => {
 
     setIsCalculating(true);
     try {
-      const address = `${formData.street}, ${formData.city}, ${formData.state}, ${formData.country || 'Australia'}`;
+      const address = `${formData.street}, ${formData.city}, ${formData.state}, ${formData.zipcode}, ${formData.country || 'Australia'}`;
       const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`);
       
       if (response.data && response.data.length > 0) {
@@ -346,23 +346,31 @@ const Payment = () => {
                       >
                         <div className='flex flex-col gap-2'>
                           <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>Street</label>
-                          <input required onChange={onChangeHandle} name='street' value={formData.street} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Enter Your Area/Street' />
+                          <input required onChange={onChangeHandle} name='street' value={formData.street} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Rowena Parade' />
                         </div>
 
                         <div className='flex flex-col gap-2'>
                           <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>Town/City</label>
-                          <input required onChange={onChangeHandle} name='city' value={formData.city} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Enter Your Town/City' />
+                          <input required onChange={onChangeHandle} name='city' value={formData.city} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Melbourne' />
                         </div>
 
-                        <div className='grid grid-cols-2 gap-4'>
+                        <div className='grid grid-cols-2 gap-4'>  </div>
                           <div className='flex flex-col gap-2'>
                             <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>State</label>
-                            <input required onChange={onChangeHandle} name='state' value={formData.state} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Enter Your State' />
+                            <input required onChange={onChangeHandle} name='state' value={formData.state} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Victoria' />
                           </div>
+
+                          {/*
                           <div className='flex flex-col gap-2'>
                             <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>Country</label>
-                            <input required onChange={onChangeHandle} name='country' value={formData.country} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='Enter Your Country' />
+                            <input required onChange={onChangeHandle} name='country' value={formData.country} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='3134' />
                           </div>
+                        */}
+                       
+
+                        <div className='flex flex-col gap-2'>
+                          <label className='text-[10px] font-black text-gray-800 uppercase tracking-widest ml-1'>Postcode</label>
+                          <input required onChange={onChangeHandle} name='zipcode' value={formData.zipcode} className='px-6 py-4 bg-gray-50 border border-transparent rounded-2xl outline-none focus:bg-white focus:border-black/5 focus:ring-4 focus:ring-black/5 transition-all font-bold' type="text" placeholder='3134' />
                         </div>
 
                         <button 
