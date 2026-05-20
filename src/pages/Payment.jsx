@@ -471,6 +471,8 @@ const Payment = () => {
                     <svg className={`w-8 h-8 ${method === 'stripe' ? 'text-amber-600' : 'text-gray-300'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                     <span className={`text-[10px] font-black uppercase tracking-widest ${method === 'stripe' ? 'text-amber-700' : 'text-gray-400'}`}>Stripe Pay</span>
                   </div>
+
+                  {/* 
                   <div
                     onClick={() => setMethod('cod')}
                     className={`p-6 rounded-[1.5rem] border-2 flex flex-col items-center gap-2 cursor-pointer transition-all ${method === 'cod' ? 'border-amber-500 bg-amber-50 shadow-lg' : 'border-gray-100 bg-white hover:border-gray-300'}`}
@@ -478,8 +480,9 @@ const Payment = () => {
                     <svg className={`w-8 h-8 ${method === 'cod' ? 'text-amber-600' : 'text-gray-300'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                     <span className={`text-[10px] font-black uppercase tracking-widest ${method === 'cod' ? 'text-amber-700' : 'text-gray-400'}`}>COD Pay</span>
                   </div>
+                  */}
                 </div>
-
+                
                 <AnimatePresence>
                   {method === 'stripe' && clientSecret ? (
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className='mt-8 pt-6 border-t border-gray-100'>

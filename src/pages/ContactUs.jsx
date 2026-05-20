@@ -72,7 +72,7 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <h4 className='text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1'>Our Location</h4>
-                  <p className='text-base md:text-lg font-bold text-gray-900'>2C Station Street Ringwood Vic- 3134 <br />Melbourne, AU</p>
+                  <p className='text-base md:text-lg font-bold text-gray-900'>2C Station Street Ringwood Vic- 3134 <br />Australia</p>
                 </div>
               </div>
 
@@ -82,7 +82,7 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <h4 className='text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1'>Opening Hours</h4>
-                  <p className='text-base md:text-lg font-bold text-gray-900'>Mon - Sat: 9am - 6pm<br />Sun: 10am - 6pm</p>
+                  <p className='text-base md:text-lg font-bold text-gray-900'>Mon - Sat: 9:30am - 6pm<br />Sun: 10am - 6pm</p>
                 </div>
               </div>
 
